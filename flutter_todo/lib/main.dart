@@ -38,7 +38,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final dbHelper = SQLiteHelper.instance;
   var dataList;
-  var listData;
+  var listData = [];
 
   @override
   void initState() {
