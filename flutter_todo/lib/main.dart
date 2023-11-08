@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/AddTaskPage.dart';
 import 'package:flutter_todo/SQLiteHelper.dart';
@@ -30,7 +27,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -45,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     initializeData();
   }
+
   Future<void> initializeData() async {
     dataList = await dbHelper.getDataList();
     log('dataList: $dataList');
@@ -52,31 +49,62 @@ class _MyHomePageState extends State<MyHomePage> {
       listData = dataList;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-
         title: const Text('Task'),
       ),
-      body: ListView.builder(itemCount: listData.length,
-      itemBuilder: (context,index){
-        return ListTile(
-          title: Text(listData[index]['title'],style: TextStyle(fontSize: 24),),
-          subtitle: Text(listData[index]['date']),
-        );
-      },),
+      body: ListView.builder(
+        itemCount: listData.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(
+              listData[index]['title'],
+              style: TextStyle(fontSize: 24),
+            ),
+            subtitle: Text(listData[index]['date']),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(listData[index]['title']),
+                    content: SingleChildScrollView(
+
+                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(listData[index]['text']),
+                        Text('終了日：${listData[index]['date']}'),
+                      ],
+                    ),
+                      ),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Close'))
+                    ],
+
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: ()async{
-          Navigator.push (
+        onPressed: () async {
+          Navigator.push(
             context,
-            MaterialPageRoute (
+            MaterialPageRoute(
               builder: (BuildContext context) => const AddTaskPage(),
             ),
-          ).then((value){
+          ).then((value) {
             initializeData();
           });
         },
